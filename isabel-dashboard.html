@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Isabel Monte — Home Biz Builders Dashboard</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap');
+
+  :root {
+    --purple: #7B1FA2;
+    --purple-dark: #4A0072;
+    --purple-mid: #9C27B0;
+    --purple-light: #F3E5F5;
+    --gold: #F0A500;
+    --gold-light: #FFD54F;
+    --navy: #1A0A2E;
+    --cream: #FDFAFF;
+    --ink: #1A1018;
+    --muted: #7A6E85;
+    --card: #FFFFFF;
+    --border: #E8D5F0;
+    --green: #2E7D32;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; background: var(--cream); color: var(--ink); min-height: 100vh; }
+
+  header {
+    background: linear-gradient(160deg, var(--purple-dark) 0%, var(--purple) 60%, var(--purple-mid) 100%);
+    padding: 28px 20px 24px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -20px; left: -10px; right: -10px;
+    height: 40px;
+    background: var(--cream);
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  }
+  .header-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 18px; }
+  .header-name { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--gold-light); line-height: 1.1; }
+  .header-sub { font-size: 0.76rem; color: rgba(255,255,255,0.65); margin-top: 3px; }
+  .logo-badge {
+    background: var(--gold);
+    color: var(--purple-dark);
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 5px 10px;
+    border-radius: 12px;
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  .stat-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 8px; }
+  .stat-box {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(240,165,0,0.35);
+    border-radius: 14px;
+    padding: 12px 8px;
+    text-align: center;
+  }
+  .stat-box .num-input {
+    width: 56px; background: transparent; border: none;
+    border-bottom: 2px solid var(--gold); color: var(--gold);
+    font-size: 1.6rem; font-weight: 700; text-align: center;
+    font-family: 'Playfair Display', serif; outline: none;
+  }
+  .stat-box .slabel { font-size: 0.65rem; color: rgba(255,255,255,0.65); margin-top: 4px; }
+
+  .tabs {
+    display: flex; background: var(--card);
+    border-bottom: 2px solid var(--border);
+    position: sticky; top: 0; z-index: 50;
+    margin-top: 12px;
+  }
+  .tab {
+    flex: 1; min-width: 68px; padding: 13px 6px;
+    text-align: center; font-size: 0.72rem; font-weight: 500;
+    color: var(--muted); cursor: pointer;
+    border-bottom: 3px solid transparent; white-space: nowrap; transition: all 0.2s;
+  }
+  .tab.active { color: var(--purple); border-bottom-color: var(--gold); font-weight: 700; }
+  .tab-icon { font-size: 1rem; display: block; margin-bottom: 2px; }
+
+  .section { display: none; padding: 18px 16px; }
+  .section.active { display: block; }
+
+  .card {
+    background: var(--card); border-radius: 16px; padding: 18px;
+    margin-bottom: 14px; border: 1px solid var(--border);
+    box-shadow: 0 2px 10px rgba(123,31,162,0.06);
+  }
+  .card-title {
+    font-family: 'Playfair Display', serif; font-size: 1rem;
+    color: var(--purple); margin-bottom: 14px;
+  }
+
+  .section-title { font-family: 'Playfair Display', serif; font-size: 1.15rem; color: var(--purple); margin-bottom: 4px; }
+  .section-sub { font-size: 0.8rem; color: var(--muted); margin-bottom: 16px; line-height: 1.4; }
+
+  .form-group { margin-bottom: 14px; }
+  label { display: block; font-size: 0.74rem; font-weight: 600; color: var(--purple); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.05em; }
+  input, select, textarea {
+    width: 100%; padding: 11px 13px; border: 2px solid var(--border);
+    border-radius: 12px; font-size: 0.88rem; font-family: 'Inter', sans-serif;
+    background: var(--cream); color: var(--ink); outline: none; transition: border-color 0.2s;
+  }
+  input:focus, select:focus, textarea:focus { border-color: var(--purple); }
+  textarea { resize: vertical; min-height: 70px; }
+
+  .btn { display: block; width: 100%; padding: 12px 20px; border-radius: 24px; border: none; font-size: 0.88rem; font-weight: 600; cursor: pointer; text-align: center; transition: all 0.2s; }
+  .btn-purple { background: var(--purple); color: white; }
+  .btn-gold { background: var(--gold); color: var(--purple-dark); }
+  .btn-sm { display: inline-block; width: auto; padding: 7px 16px; font-size: 0.78rem; border-radius: 20px; }
+
+  .member-item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .member-item:last-child { border-bottom: none; }
+  .member-avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--purple-dark), var(--purple));
+    display: flex; align-items: center; justify-content: center;
+    color: var(--gold-light); font-weight: 700; font-size: 0.85rem; flex-shrink: 0;
+  }
+  .member-name { font-weight: 600; font-size: 0.88rem; flex: 1; }
+  .member-meta { font-size: 0.74rem; color: var(--muted); }
+  .member-tag { font-size: 0.7rem; font-weight: 600; padding: 3px 9px; border-radius: 10px; background: var(--border); color: var(--muted); }
+  .tag-active { background: #e8f5e9; color: var(--green); }
+  .tag-new { background: var(--purple-light); color: var(--purple); }
+
+  .content-item { padding: 12px 0; border-bottom: 1px solid var(--border); display: flex; gap: 12px; align-items: flex-start; }
+  .content-item:last-child { border-bottom: none; }
+  .content-day { background: var(--purple); color: var(--gold-light); border-radius: 10px; padding: 6px 10px; font-size: 0.7rem; font-weight: 700; text-align: center; min-width: 46px; flex-shrink: 0; line-height: 1.3; }
+  .content-text { font-size: 0.85rem; line-height: 1.5; flex: 1; }
+  .content-type { font-size: 0.72rem; color: var(--muted); margin-top: 3px; }
+  .check-btn { width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--border); background: transparent; cursor: pointer; flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; transition: all 0.2s; }
+  .check-btn.done { background: var(--green); border-color: var(--green); color: white; }
+
+  .prompt-card {
+    background: linear-gradient(135deg, #f8f0ff, #fffde7);
+    border: 1px solid var(--border); border-radius: 14px;
+    padding: 16px; margin-bottom: 12px; cursor: pointer; transition: transform 0.15s;
+  }
+  .prompt-card:active { transform: scale(0.98); }
+  .prompt-label { font-size: 0.7rem; font-weight: 700; color: var(--purple); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+  .prompt-text { font-size: 0.88rem; line-height: 1.5; color: var(--ink); }
+  .prompt-tap { font-size: 0.72rem; color: var(--muted); margin-top: 8px; }
+
+  .chat-box { background: var(--cream); border: 2px solid var(--border); border-radius: 16px; height: 320px; overflow-y: auto; padding: 14px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 10px; }
+  .msg { max-width: 85%; padding: 10px 14px; border-radius: 16px; font-size: 0.85rem; line-height: 1.5; }
+  .msg-ai { background: white; border: 1px solid var(--border); color: var(--ink); align-self: flex-start; border-bottom-left-radius: 4px; }
+  .msg-user { background: var(--purple); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+  .msg-thinking { color: var(--muted); font-style: italic; font-size: 0.8rem; }
+
+  .chat-input-row { display: flex; gap: 8px; }
+  .chat-input { flex: 1; padding: 11px 14px; border: 2px solid var(--border); border-radius: 24px; font-size: 0.88rem; font-family: 'Inter', sans-serif; background: var(--cream); outline: none; }
+  .chat-input:focus { border-color: var(--purple); }
+  .chat-send { background: var(--gold); color: var(--purple-dark); border: none; border-radius: 50%; width: 44px; height: 44px; font-size: 1.1rem; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+
+  .api-setup { background: var(--purple-light); border: 2px solid var(--purple); border-radius: 14px; padding: 16px; margin-bottom: 14px; }
+  .api-setup p { font-size: 0.83rem; color: var(--purple-dark); margin-bottom: 10px; line-height: 1.5; }
+
+  .weekly-bar { display: flex; align-items: flex-end; gap: 6px; height: 80px; margin: 12px 0; }
+  .bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .bar { width: 100%; background: var(--purple); border-radius: 6px 6px 0 0; transition: height 0.4s ease; min-height: 4px; }
+  .bar-label { font-size: 0.65rem; color: var(--muted); }
+
+  .empty-state { text-align: center; padding: 28px 16px; color: var(--muted); }
+  .empty-state .emoji { font-size: 2rem; margin-bottom: 8px; }
+  .empty-state p { font-size: 0.83rem; line-height: 1.5; }
+
+  #toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--purple-dark); color: white; padding: 11px 22px; border-radius: 24px; font-size: 0.85rem; font-weight: 500; z-index: 999; transition: transform 0.3s ease; box-shadow: 0 4px 20px rgba(0,0,0,0.25); }
+  #toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div>
+      <div class="header-name">Isabel Monte</div>
+      <div class="header-sub">Home Biz Builders</div>
+    </div>
+    <div class="logo-badge">HOME<br>BIZ<br>BUILDERS</div>
+  </div>
+  <div class="stat-row">
+    <div class="stat-box">
+      <input class="num-input" id="stat-members" type="number" value="28" onchange="saveStats()">
+      <div class="slabel">Members</div>
+    </div>
+    <div class="stat-box">
+      <input class="num-input" id="stat-revenue" type="number" value="0" onchange="saveStats()">
+      <div class="slabel">$ This Mo</div>
+    </div>
+    <div class="stat-box">
+      <input class="num-input" id="stat-posts" type="number" value="0" onchange="saveStats()">
+      <div class="slabel">Posts Wk</div>
+    </div>
+  </div>
+</header>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('overview')"><span class="tab-icon">🏠</span>Home</div>
+  <div class="tab" onclick="showTab('members')"><span class="tab-icon">💜</span>Members</div>
+  <div class="tab" onclick="showTab('content')"><span class="tab-icon">📅</span>Content</div>
+  <div class="tab" onclick="showTab('prompts')"><span class="tab-icon">✨</span>Prompts</div>
+  <div class="tab" onclick="showTab('chat')"><span class="tab-icon">🤖</span>AI Chat</div>
+</div>
+
+<!-- HOME -->
+<div id="tab-overview" class="section active">
+  <p class="section-title">Your Week 💜</p>
+  <p class="section-sub">Track what's moving in your community.</p>
+
+  <div class="card">
+    <div class="card-title">📊 Weekly Engagement</div>
+    <div class="weekly-bar" id="week-bars"></div>
+    <p style="font-size:0.72rem;color:var(--muted)">Tap a day to log engagement</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🎯 This Week's Focus</div>
+    <textarea id="weekly-focus" placeholder="e.g. Launch income idea challenge, check in with quiet members, post caregiver win story..." style="min-height:60px" oninput="saveFocus()"></textarea>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🏆 Member Win This Week</div>
+    <textarea id="community-win" placeholder="Log a member breakthrough — a first sale, a new idea launched, someone saying they finally feel seen..." style="min-height:60px" oninput="saveWin()"></textarea>
+  </div>
+
+  <div class="card" style="background:linear-gradient(135deg,var(--purple-dark),var(--purple));color:white">
+    <div style="font-family:'Playfair Display',serif;font-size:1rem;color:var(--gold-light);margin-bottom:8px">No hustle. Real income. 💜</div>
+    <p style="font-size:0.82rem;color:rgba(255,255,255,0.8);margin-bottom:4px">28 special needs moms and caregivers building income in the cracks of caregiving life.</p>
+  </div>
+</div>
+
+<!-- MEMBERS -->
+<div id="tab-members" class="section">
+  <p class="section-title">Your Members</p>
+  <p class="section-sub">28 caregivers building income around real life. Track who needs support.</p>
+
+  <div class="card">
+    <div class="form-group">
+      <label>Member Name</label>
+      <input type="text" id="new-member-name" placeholder="Member name">
+    </div>
+    <div class="form-group">
+      <label>Status</label>
+      <select id="new-member-status">
+        <option value="new">New Member</option>
+        <option value="active">Active</option>
+        <option value="quiet">Needs Check-in</option>
+      </select>
+    </div>
+    <button class="btn btn-purple" onclick="addMember()">Add Member</button>
+  </div>
+
+  <div class="card">
+    <div id="member-list"></div>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div id="tab-content" class="section">
+  <p class="section-title">Content Calendar</p>
+  <p class="section-sub">Plan your Skool posts, income tips, and caregiver check-ins.</p>
+
+  <div class="card">
+    <div class="form-group">
+      <label>Day</label>
+      <input type="text" id="content-day" placeholder="e.g. Monday, June 16">
+    </div>
+    <div class="form-group">
+      <label>What are you posting?</label>
+      <input type="text" id="content-text" placeholder="e.g. Share a 10-min income idea for tired days">
+    </div>
+    <div class="form-group">
+      <label>Type</label>
+      <select id="content-type">
+        <option>💬 Community Post</option>
+        <option>💰 Income Idea</option>
+        <option>👋 Member Check-in</option>
+        <option>🏆 Win Celebration</option>
+        <option>📚 Resource Drop</option>
+        <option>❤️ Caregiver Story</option>
+        <option>🔥 Engagement Question</option>
+      </select>
+    </div>
+    <button class="btn btn-purple" onclick="addContent()">Add to Calendar</button>
+  </div>
+
+  <div class="card">
+    <div id="content-list"></div>
+  </div>
+</div>
+
+<!-- PROMPTS -->
+<div id="tab-prompts" class="section">
+  <p class="section-title">Community Prompts ✨</p>
+  <p class="section-sub">Tap any prompt to copy it straight into Skool.</p>
+  <div id="prompt-list"></div>
+</div>
+
+<!-- AI CHAT -->
+<div id="tab-chat" class="section">
+  <p class="section-title">Your Community AI 🤖</p>
+  <p class="section-sub">Ask for income ideas, post copy, member support strategies — anything for your community.</p>
+
+  <div id="api-setup-box" class="api-setup">
+    <p>Add your Groq API key to activate. Your key stays on your device only.</p>
+    <div class="form-group">
+      <label>Groq API Key</label>
+      <input type="password" id="api-key-input" placeholder="gsk_...">
+    </div>
+    <button class="btn btn-purple" onclick="saveApiKey()">Save Key & Start Chatting</button>
+  </div>
+
+  <div id="chat-area" style="display:none">
+    <div class="chat-box" id="chat-box"></div>
+    <div class="chat-input-row">
+      <input class="chat-input" id="chat-input" placeholder="Ask about your community..." onkeydown="if(event.key==='Enter')sendChat()">
+      <button class="chat-send" onclick="sendChat()">➤</button>
+    </div>
+    <button class="btn btn-sm" style="margin-top:10px;background:var(--border);color:var(--muted);width:auto" onclick="clearKey()">Remove API Key</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const PROMPTS = [
+  { label: '💰 Income Idea', text: "Real talk — what's ONE small way you've earned money this week that fits around caregiving? Even $5 counts. Drop it below and let's celebrate it 💜" },
+  { label: '🔥 Engagement', text: "Caregivers don't get sick days. We don't get lunch breaks. But we DO deserve income that works around our real life. What's the biggest barrier YOU hit when trying to earn from home?" },
+  { label: '❤️ Caregiver Story', text: "Share your story in one sentence: I am a caregiver for _____ and I'm building income from home by _____. Let's see how creative and resourceful this community is 💜" },
+  { label: '🎯 Weekly Challenge', text: "This week's challenge: find ONE micro income action you can do in 15 minutes or less. Research a product. Write one listing. Send one email. Post it here when you do it 💪" },
+  { label: '👋 Check-in', text: "How's your week going — honestly? Caregiving and building a business at the same time is HARD. You don't have to be okay. We're here either way 💜" },
+  { label: '🏆 Win Celebration', text: "WINS ONLY 🏆 Big or tiny — your first sale, your first post, saying no to something that drained you, getting 10 minutes to work on your idea. Post it. We celebrate ALL of it." },
+  { label: '📚 Resource', text: "Drop your favorite free tool or resource for running a home business below 👇 Let's build a list that works for people with interruptions, tired days, and zero budget." },
+  { label: '💜 No Hustle', text: "Reminder: you are not failing because you can't hustle. You are caregiving full time. That's already a full-time job. Your income just needs to fit your reality — and it can. 💜" },
+  { label: '🔥 Bold Question', text: "Hot take: The 'work harder' advice was never made for caregivers. What advice have you heard that just doesn't apply to your life? Let's vent — and then find what actually works." },
+  { label: '🌙 Reflection', text: "End of week: What's one thing you tried this week for your business — even if it was tiny? What got in the way? No judgment here. Just real talk from real caregivers. 💜" }
+];
+
+function loadState() {
+  const raw = localStorage.getItem('isabel_dash');
+  if (raw) return JSON.parse(raw);
+  return { members: [], content: [], engagement: { Mon:0,Tue:0,Wed:0,Thu:0,Fri:0,Sat:0,Sun:0 }, focus: '', win: '', stats: { members:28, revenue:0, posts:0 } };
+}
+
+let state = loadState();
+function save() { localStorage.setItem('isabel_dash', JSON.stringify(state)); }
+
+function showTab(name) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  const tabs = ['overview','members','content','prompts','chat'];
+  document.querySelectorAll('.tab')[tabs.indexOf(name)].classList.add('active');
+  if (name === 'members') renderMembers();
+  if (name === 'content') renderContent();
+  if (name === 'prompts') renderPrompts();
+  if (name === 'overview') renderBars();
+  if (name === 'chat') initChat();
+}
+
+function saveStats() {
+  state.stats.members = parseInt(document.getElementById('stat-members').value)||0;
+  state.stats.revenue = parseInt(document.getElementById('stat-revenue').value)||0;
+  state.stats.posts = parseInt(document.getElementById('stat-posts').value)||0;
+  save();
+}
+function saveFocus() { state.focus = document.getElementById('weekly-focus').value; save(); }
+function saveWin() { state.win = document.getElementById('community-win').value; save(); }
+
+function renderBars() {
+  const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const max = Math.max(...Object.values(state.engagement), 1);
+  document.getElementById('week-bars').innerHTML = days.map(d => `
+    <div class="bar-wrap" onclick="bumpDay('${d}')">
+      <div class="bar" style="height:${Math.max(8,(state.engagement[d]/max)*72)}px"></div>
+      <div class="bar-label">${d}</div>
+    </div>
+  `).join('');
+}
+function bumpDay(d) { state.engagement[d]=(state.engagement[d]||0)+1; save(); renderBars(); toast(d+' logged!'); }
+
+function addMember() {
+  const name = document.getElementById('new-member-name').value.trim();
+  const status = document.getElementById('new-member-status').value;
+  if (!name) { toast('Enter a name'); return; }
+  state.members.unshift({ name, status, added: today() });
+  save(); renderMembers();
+  document.getElementById('new-member-name').value = '';
+  toast(name + ' added 💜');
+}
+
+function renderMembers() {
+  const list = document.getElementById('member-list');
+  if (!state.members.length) { list.innerHTML = '<div class="empty-state"><div class="emoji">💜</div><p>Add your members to track them here.</p></div>'; return; }
+  const tagMap = { active:'Active', new:'New', quiet:'Check-in' };
+  const classMap = { active:'tag-active', new:'tag-new', quiet:'' };
+  list.innerHTML = state.members.map((m,i) => `
+    <div class="member-item">
+      <div class="member-avatar">${m.name[0].toUpperCase()}</div>
+      <div style="flex:1"><div class="member-name">${m.name}</div><div class="member-meta">Added ${m.added}</div></div>
+      <span class="member-tag ${classMap[m.status]}">${tagMap[m.status]}</span>
+    </div>
+  `).join('');
+}
+
+function addContent() {
+  const day = document.getElementById('content-day').value.trim();
+  const text = document.getElementById('content-text').value.trim();
+  const type = document.getElementById('content-type').value;
+  if (!day||!text) { toast('Fill in day and content'); return; }
+  state.content.unshift({ day, text, type, done: false });
+  save(); renderContent();
+  document.getElementById('content-day').value = '';
+  document.getElementById('content-text').value = '';
+  toast('Added to calendar!');
+}
+
+function toggleDone(i) { state.content[i].done = !state.content[i].done; save(); renderContent(); }
+
+function renderContent() {
+  const list = document.getElementById('content-list');
+  if (!state.content.length) { list.innerHTML = '<div class="empty-state"><div class="emoji">📅</div><p>Plan your first post above.</p></div>'; return; }
+  list.innerHTML = state.content.map((c,i) => `
+    <div class="content-item" style="${c.done?'opacity:0.5':''}">
+      <div class="content-day">${c.day.split(' ').slice(0,2).join('<br>')}</div>
+      <div style="flex:1">
+        <div class="content-text" style="${c.done?'text-decoration:line-through':''}">${c.text}</div>
+        <div class="content-type">${c.type}</div>
+      </div>
+      <button class="check-btn ${c.done?'done':''}" onclick="toggleDone(${i})">${c.done?'✓':''}</button>
+    </div>
+  `).join('');
+}
+
+function renderPrompts() {
+  document.getElementById('prompt-list').innerHTML = PROMPTS.map(p => `
+    <div class="prompt-card" onclick="copyPrompt(\`${p.text.replace(/`/g,'\\`')}\`)">
+      <div class="prompt-label">${p.label}</div>
+      <div class="prompt-text">${p.text}</div>
+      <div class="prompt-tap">Tap to copy 👆</div>
+    </div>
+  `).join('');
+}
+
+function copyPrompt(text) {
+  if (navigator.clipboard) { navigator.clipboard.writeText(text).then(() => toast('Copied! Paste it in Skool 💜')); }
+  else { toast('Long press to copy 💜'); }
+}
+
+function initChat() {
+  const key = localStorage.getItem('isabel_groq_key');
+  if (key) {
+    document.getElementById('api-setup-box').style.display = 'none';
+    document.getElementById('chat-area').style.display = 'block';
+    if (!document.getElementById('chat-box').children.length) {
+      addMsg('ai', "Hi Isabel! 💜 I'm your Home Biz Builders assistant. Ask me for income ideas for caregivers, post copy, engagement strategies, or how to support your members. No hustle, real help.");
+    }
+  }
+}
+
+function saveApiKey() {
+  const key = document.getElementById('api-key-input').value.trim();
+  if (!key.startsWith('gsk_')) { toast("That doesn't look like a Groq key"); return; }
+  localStorage.setItem('isabel_groq_key', key);
+  initChat();
+  toast('Key saved! Chat is live 💜');
+}
+
+function clearKey() {
+  localStorage.removeItem('isabel_groq_key');
+  document.getElementById('api-setup-box').style.display = 'block';
+  document.getElementById('chat-area').style.display = 'none';
+  document.getElementById('chat-box').innerHTML = '';
+}
+
+function addMsg(role, text) {
+  const box = document.getElementById('chat-box');
+  const div = document.createElement('div');
+  div.className = 'msg msg-' + role;
+  div.textContent = text;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+  return div;
+}
+
+async function sendChat() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+  const key = localStorage.getItem('isabel_groq_key');
+  if (!key) { toast('Add your Groq key first'); return; }
+  input.value = '';
+  addMsg('user', text);
+  const thinking = addMsg('ai', '...');
+  thinking.classList.add('msg-thinking');
+  try {
+    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
+      body: JSON.stringify({
+        model: 'llama-3.1-8b-instant',
+        messages: [
+          { role: 'system', content: 'You are Isabel Monte\'s community assistant for "Home Biz Builders" — a Skool community for special needs moms and family caregivers who want flexible income from home that fits real caregiving life on a micro budget. No hustle culture. Help Isabel with income ideas that work around appointments and interruptions, community post copy, engagement strategies, member support, and growing her $19/month community. Be warm, practical, and deeply understanding of the caregiver reality. Keep responses concise and mobile-friendly.' },
+          { role: 'user', content: text }
+        ],
+        max_tokens: 500
+      })
+    });
+    const data = await res.json();
+    thinking.textContent = data.choices?.[0]?.message?.content || 'Something went wrong. Try again.';
+    thinking.classList.remove('msg-thinking');
+  } catch(e) {
+    thinking.textContent = 'Connection error. Check your key and try again.';
+    thinking.classList.remove('msg-thinking');
+  }
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function today() { return new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'}); }
+
+// Init
+document.getElementById('weekly-focus').value = state.focus || '';
+document.getElementById('community-win').value = state.win || '';
+document.getElementById('stat-members').value = state.stats?.members || 28;
+document.getElementById('stat-revenue').value = state.stats?.revenue || 0;
+document.getElementById('stat-posts').value = state.stats?.posts || 0;
+renderBars();
+</script>
+</body>
+</html>
